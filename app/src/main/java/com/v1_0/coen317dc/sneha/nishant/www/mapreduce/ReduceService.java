@@ -1,7 +1,6 @@
 package com.v1_0.coen317dc.sneha.nishant.www.mapreduce;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,15 +10,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class MapService extends Service {
-    public MapService() {
+public class ReduceService extends Service {
+    public ReduceService() {
     }
 
     String ip = "nothingYet";
@@ -42,7 +40,7 @@ public class MapService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO do something useful
 
-        Toast.makeText(this, "This is from Map Service", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "This is from Reduce Service", Toast.LENGTH_LONG).show();
 
         sharedpreferences = getSharedPreferences("MyPREFERENCES", MODE_PRIVATE);
         // Reading from SharedPreferences
@@ -54,13 +52,13 @@ public class MapService extends Service {
         Log.d("SocketService IP ", Integer.toString(MyPortInt));
 
         //ip = RunSocketClient();
-        MapperTask task = new MapperTask();
+        ReduceTask task = new ReduceTask();
         task.execute();
 
         return Service.START_NOT_STICKY;
     }
 
-    private class MapperTask extends AsyncTask<String, Void, String> {
+    private class ReduceTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -102,16 +100,14 @@ public class MapService extends Service {
                 System.out.println("String Length " +ReceivedFile.length());
 
                 //System.out.println("Ready to send");
+                String FifthReducerOP = "";
+                FifthReducerOP = ReducerJob.reduceAndroid(ReceivedFile);
 
-                MapperDemo mapper = new MapperDemo();
-
-                String MapperOutput = mapper.mapAndriod(ReceivedFile);
-
-                System.out.println("output of Map: " +MapperOutput);
+                System.out.println("output of Reduce: " +FifthReducerOP);
 
                 PrintWriter printwriter;
                 printwriter = new PrintWriter(client.getOutputStream(),true);
-                printwriter.println(MapperOutput);       // sending to server
+                printwriter.println(FifthReducerOP);       // sending to server
                 printwriter.flush();               // flush the data
                 System.out.println("File sent: " + count2);
 
