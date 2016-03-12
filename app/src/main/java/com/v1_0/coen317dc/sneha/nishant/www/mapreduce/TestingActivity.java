@@ -77,6 +77,14 @@ public class TestingActivity extends AppCompatActivity {
         }
 
     }
+    public void clickedRepeatedService (View view) {
+
+        System.out.println("Repeate Service Clicked");
+        Intent i = new Intent(TestingActivity.this, AutoRepeateMapReduceService.class);
+        i.putExtra("KEY1", "Value to be used by the service");
+        TestingActivity.this.startService(i);
+
+    }
 
 
 }

@@ -111,9 +111,8 @@ public class ReduceService extends Service {
                 printwriter.flush();               // flush the data
                 System.out.println("File sent: " + count2);
 
-                String CountToUpdateinView = Integer.toString((int)count2);
-                sendBroadcastMessage(CountToUpdateinView);
-
+                System.out.println("Reduce Service Stopped");
+                stopSelf();
 
                 return "done";
             } catch (IOException e) {

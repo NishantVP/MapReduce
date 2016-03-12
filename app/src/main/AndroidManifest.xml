@@ -38,6 +38,10 @@
         <service
             android:name=".ReduceService"
             android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".AutoRepeateMapReduceService"
+            android:enabled="true"
             android:exported="true"></service>
     </application>
 

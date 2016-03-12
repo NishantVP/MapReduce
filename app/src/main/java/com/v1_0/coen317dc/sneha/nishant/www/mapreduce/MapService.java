@@ -4,7 +4,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -80,7 +82,7 @@ public class MapService extends Service {
                 while(true)
                 {
                     if((receiveMessage = receiveRead.readLine()) != null) {
-                        System.out.println(receiveMessage);
+                        //System.out.println(receiveMessage);
                         if(receiveMessage.equals("---fileSendingFinishedByServer---")){
                             System.out.println("End");
                             break;
@@ -93,7 +95,7 @@ public class MapService extends Service {
                 }
 
                 //System.out.println("Out of while");
-                System.out.println("Received File - " +ReceivedFile);
+                //System.out.println("Received File - " +ReceivedFile);
 
 
                 double count = 0.0;
@@ -107,7 +109,7 @@ public class MapService extends Service {
 
                 String MapperOutput = mapper.mapAndriod(ReceivedFile);
 
-                System.out.println("output of Map: " +MapperOutput);
+                System.out.println("output of Map: " + MapperOutput);
 
                 PrintWriter printwriter;
                 printwriter = new PrintWriter(client.getOutputStream(),true);
@@ -115,8 +117,21 @@ public class MapService extends Service {
                 printwriter.flush();               // flush the data
                 System.out.println("File sent: " + count2);
 
-                String CountToUpdateinView = Integer.toString((int)count2);
-                sendBroadcastMessage(CountToUpdateinView);
+
+                int i = 0;
+                while (i < 20) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i++;
+                }
+
+                startAutoRepeateConnectionAfterDelay();
+
+                System.out.println("Map Service Stopped");
+                stopSelf();
 
 
                 return "done";
@@ -132,6 +147,13 @@ public class MapService extends Service {
             }
 
         }
+    }
+
+    private void startAutoRepeateConnectionAfterDelay() {
+        Intent i = new Intent(MapService.this, AutoRepeateMapReduceService.class);
+        i.putExtra("KEY1", "Value to be used by the service");
+        MapService.this.startService(i);
+
     }
 
     private void sendBroadcastMessage(String messageFromPC) {
